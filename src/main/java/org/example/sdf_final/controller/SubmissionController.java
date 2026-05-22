@@ -6,6 +6,7 @@ import org.example.sdf_final.service.SubmissionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -18,11 +19,13 @@ public class SubmissionController {
     private final SubmissionService submissionService;
 
     @PostMapping
+    @PreAuthorize("hasRole('STUDENT')")
     public ResponseEntity<SubmissionResponse> createSubmission(@Valid @RequestBody SubmissionRequest request) {
         return ResponseEntity.ok(submissionService.createSubmission(request));
     }
 
     @PatchMapping("/{id}/grade")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<SubmissionResponse> gradeSubmission(
             @PathVariable Long id,
             @RequestParam Double grade) {
@@ -30,6 +33,7 @@ public class SubmissionController {
     }
 
     @GetMapping("/assignment/{assignmentId}")
+    @PreAuthorize("hasAnyRole('TEACHER', 'ADMIN')")
     public ResponseEntity<List<SubmissionResponse>> getSubmissionsByAssignment(@PathVariable Long assignmentId) {
         return ResponseEntity.ok(submissionService.getAllSubmissionsByAssignment(assignmentId));
     }
