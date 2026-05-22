@@ -1,0 +1,22 @@
+version: '4.54.0'
+
+services:
+  main-db:
+    image: 'postgres'
+    container_name: 'main-database-container'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=410228337
+      - POSTGRES_DB=SE_Final
+    ports:
+      - "2345:5432"
+
+  test-db:
+    image: 'postgres'
+    container_name: 'test-database-container'
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=410228337
+      - POSTGRES_DB=SE_Final_test
+    ports:
+      - "2346:5432"
