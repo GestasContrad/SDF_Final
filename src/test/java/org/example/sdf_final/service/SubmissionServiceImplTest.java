@@ -1,6 +1,7 @@
 package org.example.sdf_final.service;
 
 import org.example.sdf_final.dto.request.SubmissionRequest;
+import org.example.sdf_final.dto.response.SubmissionResponse;
 import org.example.sdf_final.entity.Assignment;
 import org.example.sdf_final.entity.Submission;
 import org.example.sdf_final.entity.User;
@@ -14,9 +15,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -41,6 +40,7 @@ class SubmissionServiceImplTest {
         when(userRepository.findById(1L)).thenReturn(Optional.of(new User()));
         when(assignmentRepository.findById(1L)).thenReturn(Optional.of(new Assignment()));
         when(submissionMapper.toEntity(request)).thenReturn(submission);
+        when(submissionMapper.toResponse(any())) .thenReturn(new SubmissionResponse());
         when(submissionRepository.save(any())).thenReturn(submission);
 
         submissionService.createSubmission(request);
@@ -51,8 +51,8 @@ class SubmissionServiceImplTest {
 
     // Set grade (it have limit) - success
     @Test
-    void setGrade_Validation_ThrowsOnInvalidGrides() {
-        Submission submission = new Submission();
+    void setGrade_ShouldThrowException_WhenGradeIsInvalid() {
+    Submission submission = new Submission();
         when(submissionRepository.findById(1L)).thenReturn(Optional.of(submission));
 
         assertThrows(RuntimeException.class, () -> submissionService.setGrade(1L, -5.0));

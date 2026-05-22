@@ -59,6 +59,7 @@ class LessonServiceImplTest {
         when(lessonRepository.save(any())).thenReturn(lesson);
         when(lessonMapper.toResponse(any())).thenReturn(new LessonResponse());
 
+        when(lessonMapper.toResponse(any())).thenReturn(new LessonResponse());
         lessonService.updateLesson(1L, request);
 
         assertEquals(2L, lesson.getCourse().getId());

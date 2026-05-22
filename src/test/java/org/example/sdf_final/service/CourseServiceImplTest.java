@@ -13,10 +13,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.List;
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -55,6 +53,7 @@ class CourseServiceImplTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(teacher));
         when(courseMapper.toEntity(request)).thenReturn(course);
+        when(courseMapper.toResponse(any())).thenReturn(new CourseResponse());
         when(courseRepository.save(any())).thenReturn(course);
         when(courseMapper.toResponse(any())).thenReturn(new CourseResponse());
 

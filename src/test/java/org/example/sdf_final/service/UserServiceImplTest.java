@@ -13,7 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
-
 import java.util.Objects;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
@@ -38,7 +37,7 @@ class UserServiceImplTest {
         UserResponse response = new UserResponse();
 
         when(userMapper.toEntity(request)).thenReturn(user);
-        when(Objects.requireNonNull(passwordEncoder.encode("123"))).thenReturn("encoded_123");
+        when(passwordEncoder.encode("123")).thenReturn("encoded_123");
         when(userRepository.save(any(User.class))).thenReturn(user);
         when(userMapper.toResponse(user)).thenReturn(response);
 
@@ -80,7 +79,7 @@ class UserServiceImplTest {
 
         when(userRepository.findById(1L)).thenReturn(Optional.of(user));
         when(passwordEncoder.matches("old", "hashed_old")).thenReturn(true);
-        when(Objects.requireNonNull(passwordEncoder.encode("new"))).thenReturn("hashed_new");
+        when(passwordEncoder.encode("new")).thenReturn("hashed_new");
 
         userService.changePassword(1L, request);
 

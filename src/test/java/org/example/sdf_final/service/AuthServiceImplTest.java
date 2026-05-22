@@ -15,7 +15,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import java.util.Objects;
 import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -41,7 +40,7 @@ class AuthServiceImplTest {
         request.setLastName("Doe");
         request.setRole(User.Role.STUDENT);
 
-        when(Objects.requireNonNull(passwordEncoder.encode("password"))).thenReturn("encoded_pass");
+        when(passwordEncoder.encode("password")).thenReturn("encoded_pass");
         when(jwtService.generateToken("test@example.com")).thenReturn("mock_jwt_token");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 

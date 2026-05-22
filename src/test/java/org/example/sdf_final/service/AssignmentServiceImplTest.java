@@ -17,9 +17,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
 import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
@@ -102,7 +100,7 @@ class AssignmentServiceImplTest {
     @Test
     void getAssignmentById_NotFound_ThrowsRuntimeException() {
         when(assignmentRepository.findById(99L)).thenReturn(Optional.empty());
-        assertThrows(EntityActionVetoException.class, () -> assignmentService.getAssignmentById(99L));
+        assertThrows(RuntimeException.class, () -> assignmentService.getAssignmentById(99L));
         verify(assignmentRepository).findById(99L);
     }
 }
