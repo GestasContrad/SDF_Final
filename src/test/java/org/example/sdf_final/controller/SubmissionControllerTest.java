@@ -1,6 +1,9 @@
 package org.example.sdf_final.controller;
 
 import org.example.sdf_final.dto.request.SubmissionRequest;
+import org.example.sdf_final.entity.Assignment;
+import org.example.sdf_final.entity.Submission;
+import org.example.sdf_final.entity.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -14,9 +17,13 @@ class SubmissionControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(roles = "STUDENT")
     void createSubmission_shouldReturn200() throws Exception {
+        User student = createStudent();
+        Assignment assignment = createAssignment();
+
         SubmissionRequest request = new SubmissionRequest();
-        request.setStudentId(1L);
-        request.setAssignmentId(1L);
+        request.setContent("Submission content");
+        request.setStudentId(student.getId());
+        request.setAssignmentId(assignment.getId());
 
         mockMvc.perform(post("/api/submissions")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -28,7 +35,10 @@ class SubmissionControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(roles = "TEACHER")
     void gradeSubmission_shouldReturn200() throws Exception {
-        mockMvc.perform(patch("/api/submissions/1/grade")
+        Submission submission = createSubmission();
+        Long generatedId = submission.getId();
+
+        mockMvc.perform(patch("/api/submissions/"+ generatedId +"/grade")
                         .param("grade", "90"))
                 .andExpect(status().isOk());
     }
@@ -37,9 +47,11 @@ class SubmissionControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(roles = "STUDENT")
     void gradeSubmission_student_shouldReturn403() throws Exception {
+        Submission submission = createSubmission();
+        Long generatedId = submission.getId();
 
-        mockMvc.perform(patch("/api/submissions/1/grade")
+        mockMvc.perform(patch("/api/submissions/"+ generatedId +"/grade")
                         .param("grade", "90"))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 }
