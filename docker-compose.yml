@@ -1,22 +1,28 @@
-version: '4.54.0'
-
 services:
   main-db:
-    image: 'postgres'
-    container_name: 'SDF_Final-main-container'
+    image: postgres:16
+    container_name: SDF_Final-main-container
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=04041996As!
-      - POSTGRES_DB=SE_Final
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
     ports:
       - "2345:5432"
+    volumes:
+      - main_db_data:/var/lib/postgresql/data
 
   test-db:
-    image: 'postgres'
-    container_name: 'SDF_Final-test-container'
+    image: postgres:16
+    container_name: SDF_Final-test-container
     environment:
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=04041996As!
-      - POSTGRES_DB=SE_Final_test
+      POSTGRES_USER: ${TEST_POSTGRES_USER}
+      POSTGRES_PASSWORD: ${TEST_POSTGRES_PASSWORD}
+      POSTGRES_DB: ${TEST_POSTGRES_DB}
     ports:
       - "2346:5432"
+    volumes:
+      - test_db_data:/var/lib/postgresql/data
+
+volumes:
+  main_db_data:
+  test_db_data:
