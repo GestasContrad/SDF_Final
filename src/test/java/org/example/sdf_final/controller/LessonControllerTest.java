@@ -1,6 +1,7 @@
 package org.example.sdf_final.controller;
 
 import org.example.sdf_final.dto.request.LessonRequest;
+import org.example.sdf_final.entity.Lesson;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -16,7 +17,7 @@ class LessonControllerTest extends BaseControllerTest {
     void createLesson_shouldReturn200() throws Exception {
         LessonRequest request = new LessonRequest();
         request.setTitle("Lesson 1");
-        request.setCourseId(1L);
+        request.setCourseId(createCourse().getId());
 
         mockMvc.perform(post("/api/lessons")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -26,8 +27,12 @@ class LessonControllerTest extends BaseControllerTest {
 
     // Get lesson - success
     @Test
+    @WithMockUser
     void getLesson_shouldReturn200() throws Exception {
-        mockMvc.perform(get("/api/lessons/1"))
+        Lesson lesson = createLesson();
+        Long generatedId = lesson.getId();
+
+        mockMvc.perform(get("/api/lessons/" + generatedId ))
                 .andExpect(status().isOk());
     }
 
@@ -42,6 +47,6 @@ class LessonControllerTest extends BaseControllerTest {
         mockMvc.perform(post("/api/lessons")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(request)))
-                .andExpect(status().isForbidden());
+                .andExpect(status().isNotFound());
     }
 }

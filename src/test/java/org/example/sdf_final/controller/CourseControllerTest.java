@@ -16,34 +16,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CourseControllerTest extends BaseControllerTest {
 
-    @Autowired
-    private CourseRepository courseRepository;
-    @Autowired
-    private UserRepository userRepository;
-
-    // Create teacher in db
-    User createTeacher() {
-        User teacher = new User();
-        // Make email unique
-        teacher.setEmail("teacher_" + System.nanoTime() + "@mail.com");
-        teacher.setPassword("password");
-        teacher.setFirstName("Teacher");
-        teacher.setLastName("Green");
-        teacher.setRole(User.Role.TEACHER);
-        teacher = userRepository.save(teacher);
-        return teacher;
-    }
-
-    Course createCourse() {
-        User teacher = createTeacher();
-
-        Course course = new Course();
-        course.setTitle("Math");
-        course.setTeacher(teacher);
-        course = courseRepository.save(course);
-        return course;
-    }
-
     // Create course - success
     @Test
     @WithMockUser(roles = "ADMIN")
