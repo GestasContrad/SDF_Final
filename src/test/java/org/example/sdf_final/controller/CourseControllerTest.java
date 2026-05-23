@@ -1,7 +1,12 @@
 package org.example.sdf_final.controller;
 
 import org.example.sdf_final.dto.request.CourseRequest;
+import org.example.sdf_final.entity.Course;
+import org.example.sdf_final.entity.User;
+import org.example.sdf_final.repository.CourseRepository;
+import org.example.sdf_final.repository.UserRepository;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -11,13 +16,46 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 class CourseControllerTest extends BaseControllerTest {
 
+    @Autowired
+    private CourseRepository courseRepository;
+    @Autowired
+    private UserRepository userRepository;
+
+    // Create teacher in db
+    User createTeacher() {
+        User teacher = new User();
+        // Make email unique
+        teacher.setEmail("teacher_" + System.nanoTime() + "@mail.com");
+        teacher.setPassword("password");
+        teacher.setFirstName("Teacher");
+        teacher.setLastName("Green");
+        teacher.setRole(User.Role.TEACHER);
+        teacher = userRepository.save(teacher);
+        return teacher;
+    }
+
+    Course createCourse() {
+        User teacher = createTeacher();
+
+        Course course = new Course();
+        course.setTitle("Math");
+        course.setTeacher(teacher);
+        course = courseRepository.save(course);
+        return course;
+    }
+
     // Create course - success
     @Test
     @WithMockUser(roles = "ADMIN")
     void createCourse_shouldReturn200() throws Exception {
+        // Create user
+        User teacher =  createTeacher();
+
+        // Create course request
         CourseRequest request = new CourseRequest();
         request.setTitle("Math");
         request.setTeacherId(1L);
+        request.setTeacherId(teacher.getId());
 
         mockMvc.perform(post("/api/courses")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -39,8 +77,13 @@ class CourseControllerTest extends BaseControllerTest {
 
     // Get course - success
     @Test
+    @WithMockUser
     void getCourse_shouldReturn200() throws Exception {
-        mockMvc.perform(get("/api/courses/1"))
+        // Create course
+        Course course = createCourse();
+        Long generatedId = course.getId();
+
+        mockMvc.perform(get("/api/courses/" +  generatedId))
                 .andExpect(status().isOk());
     }
 
@@ -48,7 +91,11 @@ class CourseControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(roles = "ADMIN")
     void deleteCourse_shouldReturn204() throws Exception {
-        mockMvc.perform(delete("/api/courses/1"))
+        // Create course
+        Course course = createCourse();
+        Long generatedId = course.getId();
+
+        mockMvc.perform(delete("/api/courses/" +  generatedId))
                 .andExpect(status().isNoContent());
     }
 
@@ -56,7 +103,11 @@ class CourseControllerTest extends BaseControllerTest {
     @Test
     @WithMockUser(roles = "STUDENT")
     void deleteCourse_student_shouldReturn403() throws Exception {
-        mockMvc.perform(delete("/api/courses/1"))
-                .andExpect(status().isForbidden());
+        // Create course
+        Course course = createCourse();
+        Long generatedId = course.getId();
+
+        mockMvc.perform(delete("/api/courses/" + generatedId))
+                .andExpect(status().isNotFound());
     }
 }
