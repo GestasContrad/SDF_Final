@@ -1,20 +1,23 @@
 package org.example.sdf_final.security;
 
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.io.Decoders;
+import org.springframework.beans.factory.annotation.Value;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Service;
-
 import javax.crypto.SecretKey;
 import java.util.Date;
 
 @Service
 public class JwtService {
-    private final String SECRET_KEY = "c2VjcmV0S2V5X0FjY2Vzcy1Ub2tlbl9TUEVDSUFMX0tFWV8xMjM0NTY3OA==";
+
+    @Value("${jwt.secret}")
+    private String secretKey;
 
     // An auxiliary method for obtaining a security key
     private SecretKey getSigningKey() {
-        return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
+        byte[] keyBytes = Decoders.BASE64.decode(secretKey);
+        return Keys.hmacShaKeyFor(keyBytes);
     }
 
     // Generates token, it will work of 10 hours

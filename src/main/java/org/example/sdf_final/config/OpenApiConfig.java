@@ -11,10 +11,10 @@ import org.springframework.context.annotation.Configuration;
 
 @OpenAPIDefinition(
         info = @Info(
-        title = "LMS API", version = "1.0",
-        description = "Learning Management System REST API",
-        contact = @Contact(name = "LMS Team")
-)
+                title = "LMS API", version = "1.0",
+                description = "Learning Management System REST API",
+                contact = @Contact(name = "LMS Team")
+        )
 )
 
 @SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP,
